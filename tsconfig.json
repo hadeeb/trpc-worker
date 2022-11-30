@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2019",
+    "lib": ["DOM", "ES2019"],
+    "declaration": true,
+    "moduleResolution": "NodeNext",
+    "emitDeclarationOnly": true,
+    "skipLibCheck": true,
+    "declarationDir": "dist"
+  },
+  "exclude": ["node_modules"],
+  "files": ["src/adapter.ts", "src/link.ts"]
+}
