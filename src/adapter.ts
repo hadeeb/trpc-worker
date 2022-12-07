@@ -1,21 +1,23 @@
 import type { AnyRouter, inferRouterContext } from "@trpc/server";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
-import { createWorkerMessage, Endpoint, isWorkerMessage } from "./shared.js";
+import {
+  SOCKET_STATE,
+  createWorkerMessage,
+  Endpoint,
+  isWorkerMessage,
+} from "./shared.js";
 
 function applyWorkerHandler<TRouter extends AnyRouter>({
   router,
   createContext,
   worker = self,
 }: TRPCWorkerOptions<TRouter>) {
-  interface SocketClientPonyFill {
-    OPEN: number;
-    readyState: number;
-  }
   class SocketClientPonyFill extends EventTarget {
     constructor() {
       super();
-      this.OPEN = 1;
-      this.readyState = 1;
+      Object.assign(this, SOCKET_STATE, {
+        readyState: SOCKET_STATE.OPEN,
+      });
     }
     on(
       type: string,
@@ -24,7 +26,7 @@ function applyWorkerHandler<TRouter extends AnyRouter>({
     ) {
       this.addEventListener(
         `custom-${type}`,
-        (e) => callback((e as CustomEvent<any>).detail),
+        (e) => callback((e as MessageEvent<any>).data),
         opts
       );
     }
@@ -34,10 +36,13 @@ function applyWorkerHandler<TRouter extends AnyRouter>({
     send(data: string) {
       worker.postMessage(createWorkerMessage(data));
     }
-    emit(type: string, data: any) {
-      this.dispatchEvent(new CustomEvent(`custom-${type}`, { detail: data }));
+    emit(type: string, data?: any) {
+      // CustomEvent not in node LTS yet
+      this.dispatchEvent(new MessageEvent(`custom-${type}`, { data }));
     }
-    close() {}
+    close() {
+      this.emit("close");
+    }
   }
 
   applyWSSHandler({
