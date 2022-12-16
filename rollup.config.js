@@ -44,14 +44,12 @@ export default defineConfig({
           };
 
           fs.rmSync(`./${name}`, { recursive: true, force: true });
+          const relativePath = path.relative(`./${name}`, `${OUTPUT}/${name}`);
           writeFile(
             `./${name}/index.js`,
-            `module.exports = require('../${OUTPUT}/${name}.js');`
+            `module.exports = require('${relativePath}.js');`
           );
-          writeFile(
-            `./${name}/index.d.ts`,
-            `export * from '../${OUTPUT}/${name}';`
-          );
+          writeFile(`./${name}/index.d.ts`, `export * from '${relativePath}';`);
         });
 
         const { devDependencies, ...packageJSON } = JSON.parse(

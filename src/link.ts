@@ -1,57 +1,66 @@
 import type { AnyRouter } from "@trpc/server";
 import { createWSClient, wsLink } from "@trpc/client";
-import {
-  SOCKET_STATE,
-  createWorkerMessage,
-  Endpoint,
-  isWorkerMessage,
-} from "./shared.js";
+import { createTrpcPortMessage, SOCKET_STATE } from "./shared.js";
 
-type LinkOptions = { worker: Endpoint };
+type SocketEssentials = Pick<
+  WebSocket,
+  | "addEventListener"
+  | "removeEventListener"
+  | "close"
+  | "send"
+  | "readyState"
+  | "CLOSED"
+  | "CLOSING"
+  | "CONNECTING"
+  | "OPEN"
+>;
 
-function workerLink<TRouter extends AnyRouter>({ worker }: LinkOptions) {
-  interface SocketPonyFill
-    extends Omit<WebSocket, "addEventListener" | "removeEventListener"> {
-    listener: (e: MessageEvent<any>) => void;
+class SocketPonyFill {
+  constructor(port: MessagePort) {
+    const essentials: SocketEssentials = {
+      ...SOCKET_STATE,
+      readyState: SOCKET_STATE.OPEN,
+      addEventListener: port.addEventListener.bind(port),
+      removeEventListener: port.removeEventListener.bind(port),
+      close: port.close.bind(port),
+      send: port.postMessage.bind(port),
+    };
+    Object.assign(this, essentials);
+
+    port.start();
+    queueMicrotask(() => port.dispatchEvent(new Event("open")));
   }
+}
 
-  class SocketPonyFill extends EventTarget {
-    static CONNECTING = SOCKET_STATE.CONNECTING;
-    static OPEN = SOCKET_STATE.OPEN;
-    static CLOSING = SOCKET_STATE.CLOSING;
-    static CLOSED = SOCKET_STATE.CLOSED;
+Object.assign(SocketPonyFill, SOCKET_STATE);
 
-    constructor() {
-      super();
+interface MessagePortLinkOptions {
+  port: MessagePort;
+}
 
-      Object.assign(this, SOCKET_STATE, { readyState: SOCKET_STATE.OPEN });
-
-      this.listener = (e: MessageEvent<any>) => {
-        if (isWorkerMessage(e.data)) {
-          this.dispatchEvent(
-            new MessageEvent("message", { data: e.data.data })
-          );
-        }
-      };
-
-      worker.addEventListener("message", this.listener);
-
-      queueMicrotask(() => this.dispatchEvent(new Event("open")));
-    }
-
-    close() {
-      this.dispatchEvent(new CloseEvent("close", { code: 0 }));
-      worker.removeEventListener("message", this.listener);
-    }
-
-    send(data: string) {
-      worker.postMessage(createWorkerMessage(data));
-    }
-  }
-
+function messagePortLink<TRouter extends AnyRouter>(
+  opts: MessagePortLinkOptions
+) {
   return wsLink<TRouter>({
-    client: createWSClient({ url: "", WebSocket: SocketPonyFill }),
+    client: createWSClient({
+      url: opts.port as unknown as string,
+      WebSocket: SocketPonyFill as unknown as typeof WebSocket,
+    }),
   });
 }
 
-export { workerLink };
+interface PostMessageInterface {
+  postMessage(message: any, options: StructuredSerializeOptions): void;
+}
+
+interface WorkerLinkOptions {
+  worker: PostMessageInterface;
+}
+
+function workerLink<TRouter extends AnyRouter>(opts: WorkerLinkOptions) {
+  const { port1, port2 } = new MessageChannel();
+  opts.worker.postMessage(createTrpcPortMessage(port1), { transfer: [port1] });
+  return messagePortLink<TRouter>({ port: port2 });
+}
+
+export { messagePortLink, workerLink };

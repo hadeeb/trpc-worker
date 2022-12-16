@@ -1,29 +1,16 @@
-type TRPCWorkerMessage = {
-  type: "trpc-message";
-  data: string;
-};
-
-function createWorkerMessage(data: string): TRPCWorkerMessage {
-  return { data, type: "trpc-message" };
+function createTrpcPortMessage(port: MessagePort) {
+  return ["trpc-port", port] as const;
 }
 
-function isWorkerMessage(request: unknown): request is TRPCWorkerMessage {
+function isTrpcPortMessage(
+  data: unknown
+): data is ReturnType<typeof createTrpcPortMessage> {
   return (
-    typeof request === "object" &&
-    request !== null &&
-    (request as TRPCWorkerMessage).type === "trpc-message" &&
-    typeof (request as TRPCWorkerMessage).data === "string"
+    Array.isArray(data) &&
+    data.length === 2 &&
+    data[0] === "trpc-port" &&
+    data[1] instanceof MessagePort
   );
-}
-
-export interface Endpoint {
-  addEventListener(type: "message", listener: (ev: MessageEvent) => void): void;
-  removeEventListener(
-    type: "message",
-    listener: (ev: MessageEvent) => void
-  ): void;
-
-  postMessage(message: any): void;
 }
 
 const SOCKET_STATE = {
@@ -33,4 +20,4 @@ const SOCKET_STATE = {
   CLOSED: 3,
 } as const;
 
-export { createWorkerMessage, isWorkerMessage, SOCKET_STATE };
+export { SOCKET_STATE, createTrpcPortMessage, isTrpcPortMessage };

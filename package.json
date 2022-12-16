@@ -16,13 +16,21 @@
   "license": "MIT",
   "peerDependencies": {
     "@trpc/client": "^10.0.0",
-    "@trpc/server": "^10.0.0"
+    "@trpc/server": "^10.0.0",
+    "electron": "^22.0.0"
+  },
+  "peerDependenciesMeta": {
+    "electron": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.1",
     "@rollup/plugin-typescript": "^10.0.1",
     "@trpc/client": "^10.0.0",
     "@trpc/server": "^10.0.0",
+    "@types/node": "^16.x",
+    "electron": "^22.0.0",
     "rollup": "^3.4.0",
     "rollup-plugin-node-externals": "^5.0.2",
     "typescript": "^4.9.3"
