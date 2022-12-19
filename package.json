@@ -16,13 +16,7 @@
   "license": "MIT",
   "peerDependencies": {
     "@trpc/client": "^10.0.0",
-    "@trpc/server": "^10.0.0",
-    "electron": "^22.0.0"
-  },
-  "peerDependenciesMeta": {
-    "electron": {
-      "optional": true
-    }
+    "@trpc/server": "^10.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.1",
@@ -30,6 +24,7 @@
     "@trpc/client": "^10.0.0",
     "@trpc/server": "^10.0.0",
     "@types/node": "^16.x",
+    "@types/ws": "^8.5.3",
     "electron": "^22.0.0",
     "rollup": "^3.4.0",
     "rollup-plugin-node-externals": "^5.0.2",

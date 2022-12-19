@@ -1,14 +1,20 @@
 {
   "compilerOptions": {
-    "target": "ES2019",
-    "lib": ["DOM", "ES2019"],
+    "module": "esnext",
+    "lib": ["esnext", "dom", "dom.iterable", "webworker"],
+    "target": "es2020",
     "declaration": true,
-    "moduleResolution": "NodeNext",
     "emitDeclarationOnly": true,
     "declarationMap": true,
-    "skipLibCheck": true,
-    "declarationDir": "dist"
+    "outDir": "./dist",
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedIndexedAccess": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true
   },
-  "include": ["src"],
-  "exclude": ["**/*.test.ts"]
+  "include": ["src"]
 }

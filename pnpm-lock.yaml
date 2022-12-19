@@ -6,6 +6,7 @@ specifiers:
   '@trpc/client': ^10.0.0
   '@trpc/server': ^10.0.0
   '@types/node': ^16.x
+  '@types/ws': ^8.5.3
   electron: ^22.0.0
   rollup: ^3.4.0
   rollup-plugin-node-externals: ^5.0.2
@@ -17,6 +18,7 @@ devDependencies:
   '@trpc/client': 10.4.1_@trpc+server@10.4.1
   '@trpc/server': 10.4.1
   '@types/node': 16.18.8
+  '@types/ws': 8.5.3
   electron: 22.0.0
   rollup: 3.5.0
   rollup-plugin-node-externals: 5.0.2_rollup@3.5.0
@@ -150,6 +152,12 @@ packages:
 
   /@types/responselike/1.0.0:
     resolution: {integrity: sha512-85Y2BjiufFzaMIlvJDvTTB8Fxl2xfLo4HgmHzVBz08w4wDePCTjYw66PdrolO0kzli3yam/YCgRufyo1DdQVTA==}
+    dependencies:
+      '@types/node': 16.18.8
+    dev: true
+
+  /@types/ws/8.5.3:
+    resolution: {integrity: sha512-6YOoWjruKj1uLf3INHH7D3qTXwFfEsg1kf3c0uDdSBJwfa/llkwIjrAGV7j7mVgGNbzTQ3HiHKKDXl6bJPD97w==}
     dependencies:
       '@types/node': 16.18.8
     dev: true

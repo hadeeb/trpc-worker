@@ -1,18 +1,25 @@
-# tRPC Worker
+# tRPC in a Worker
 
 Run tRPC in a web worker
 
-## Worker thread
+## Web Worker
+
+### Worker thread
 
 ```ts
-import { applyWorkerHandler } from "@hadeeb/trpc-worker/adapter";
-import { appRouter } from "./router";
-import { createContext } from "./context";
+import { applyWSSHandler } from "@trpc/server/adapters/ws";
+import { createWorkerServer } from "@hadeeb/trpc-worker/adapter";
+import { appRouter } from "../path/to/router";
+import { createContext } from "../path/to/context";
 
-applyWorkerHandler({ router: appRouter, createContext });
+applyWSSHandler({
+  router: appRouter,
+  createContext,
+  wss: createWorkerServer(),
+});
 ```
 
-## Main thread
+### Main thread
 
 ```ts
 import { createTRPCProxyClient } from "@trpc/client";
@@ -25,5 +32,34 @@ const client = createTRPCProxyClient<AppRouter>({
       worker: new Worker("../path/to/trpc/worker"),
     }),
   ],
+});
+```
+
+## Electron
+
+### Main Process
+
+```ts
+import { createEletronServer } from "@hadeeb/trpc-worker/adapter";
+
+applyWSSHandler({
+  router: appRouter,
+  createContext,
+  wss: createEletronServer(),
+});
+```
+
+### Preload script
+
+```ts
+import { trpcElectronPreload } from "@hadeeb/trpc-worker/adapter";
+trpcElectronPreload();
+```
+
+### Browser script
+
+```ts
+const client = createTRPCProxyClient<AppRouter>({
+  links: [workerLink({ worker: window })],
 });
 ```
