@@ -16,7 +16,8 @@ type SocketEssentials = Pick<
   | "OPEN"
 >;
 
-function SocketPonyFill(this: typeof SocketPonyFill, port: MessagePort) {
+interface SocketPonyFill extends SocketEssentials {}
+function SocketPonyFill(this: SocketPonyFill, port: MessagePort) {
   const essentials: SocketEssentials = {
     ...SOCKET_STATE,
     readyState: SOCKET_STATE.OPEN,
@@ -33,33 +34,23 @@ function SocketPonyFill(this: typeof SocketPonyFill, port: MessagePort) {
 
 Object.assign(SocketPonyFill, SOCKET_STATE);
 
-interface MessagePortLinkOptions {
-  port: MessagePort;
-}
-
-function messagePortLink<TRouter extends AnyRouter>({
-  port,
-}: MessagePortLinkOptions) {
-  return wsLink<TRouter>({
-    client: createWSClient({
-      url: port as unknown as string,
-      WebSocket: SocketPonyFill as unknown as typeof WebSocket,
-    }),
-  });
-}
-
-interface PostMessageInterface {
+interface WorkerLike {
   postMessage(message: any, options: StructuredSerializeOptions): void;
 }
 
 interface WorkerLinkOptions {
-  worker: PostMessageInterface;
+  worker: WorkerLike;
 }
 
 function workerLink<TRouter extends AnyRouter>({ worker }: WorkerLinkOptions) {
   const { port1, port2 } = new MessageChannel();
   worker.postMessage(createTrpcPortMessage(port1), { transfer: [port1] });
-  return messagePortLink<TRouter>({ port: port2 });
+  return wsLink<TRouter>({
+    client: createWSClient({
+      url: port2 as unknown as string,
+      WebSocket: SocketPonyFill as unknown as typeof WebSocket,
+    }),
+  });
 }
 
-export { messagePortLink, workerLink };
+export { workerLink };

@@ -63,15 +63,16 @@ function socketServer(
   return server as unknown as ws.Server;
 }
 
-function createMessagePortServer({ port }: { port: MessagePort }) {
-  return socketServer((onConnection) => {
-    onConnection(socketPonyFill(port));
-  });
+interface WorkerLike {
+  addEventListener(
+    type: "message",
+    listener: (ev: MessageEvent<any>) => any
+  ): any;
 }
 
-function createWorkerServer() {
+function createWorkerServer({ worker }: { worker: WorkerLike }) {
   return socketServer((onConnection) => {
-    self.addEventListener("message", ({ data }) => {
+    worker.addEventListener("message", ({ data }) => {
       if (isTrpcPortMessage(data)) {
         onConnection(socketPonyFill(data[1]));
       }
@@ -120,9 +121,4 @@ export {
   socketPonyFill as unstable_socketPonyFill,
   isTrpcPortMessage as unstable_isTrpcPortMessage,
 };
-export {
-  createEletronServer,
-  createMessagePortServer,
-  createWorkerServer,
-  trpcElectronPreload,
-};
+export { createEletronServer, createWorkerServer, trpcElectronPreload };

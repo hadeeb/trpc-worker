@@ -15,7 +15,7 @@ import { createContext } from "../path/to/context";
 applyWSSHandler({
   router: appRouter,
   createContext,
-  wss: createWorkerServer(),
+  wss: createWorkerServer({ worker: self }),
 });
 ```
 
@@ -26,12 +26,9 @@ import { createTRPCProxyClient } from "@trpc/client";
 import { workerLink } from "@hadeeb/trpc-worker/link";
 import type { AppRouter } from "../path/to/server/trpc";
 
+const worker = new Worker("../path/to/trpc/worker");
 const client = createTRPCProxyClient<AppRouter>({
-  links: [
-    workerLink({
-      worker: new Worker("../path/to/trpc/worker"),
-    }),
-  ],
+  links: [workerLink({ worker })],
 });
 ```
 
@@ -40,20 +37,23 @@ const client = createTRPCProxyClient<AppRouter>({
 ### Main Process
 
 ```ts
+import { ipcMain } from "electron";
 import { createEletronServer } from "@hadeeb/trpc-worker/adapter";
 
 applyWSSHandler({
   router: appRouter,
   createContext,
-  wss: createEletronServer(),
+  wss: createEletronServer({ ipcMain }),
 });
 ```
 
 ### Preload script
 
 ```ts
+import { ipcRenderer } from "electron";
 import { trpcElectronPreload } from "@hadeeb/trpc-worker/adapter";
-trpcElectronPreload();
+
+trpcElectronPreload({ ipcRenderer });
 ```
 
 ### Browser script
