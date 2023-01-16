@@ -1,5 +1,4 @@
-import { createWSClient, wsLink } from "@trpc/client";
-import type { AnyRouter } from "@trpc/server";
+import { createWSClient } from "@trpc/client";
 
 import { createTrpcPortMessage, SOCKET_STATE } from "./shared.js";
 
@@ -42,15 +41,13 @@ interface WorkerLinkOptions {
   worker: WorkerLike;
 }
 
-function workerLink<TRouter extends AnyRouter>({ worker }: WorkerLinkOptions) {
+function createWorkerClient({ worker }: WorkerLinkOptions) {
   const { port1, port2 } = new MessageChannel();
   worker.postMessage(createTrpcPortMessage(port1), { transfer: [port1] });
-  return wsLink<TRouter>({
-    client: createWSClient({
-      url: port2 as unknown as string,
-      WebSocket: SocketPonyFill as unknown as typeof WebSocket,
-    }),
+  return createWSClient({
+    url: port2 as unknown as string,
+    WebSocket: SocketPonyFill as unknown as typeof WebSocket,
   });
 }
 
-export { workerLink };
+export { createWorkerClient };

@@ -22,13 +22,17 @@ applyWSSHandler({
 ### Main thread
 
 ```ts
-import { createTRPCProxyClient } from "@trpc/client";
-import { workerLink } from "@hadeeb/trpc-worker/link";
+import { createTRPCProxyClient, wsLink } from "@trpc/client";
+import { createWorkerClient } from "@hadeeb/trpc-worker/link";
 import type { AppRouter } from "../path/to/server/trpc";
 
 const worker = new Worker("../path/to/trpc/worker");
 const client = createTRPCProxyClient<AppRouter>({
-  links: [workerLink({ worker })],
+  links: [
+    wsLink({
+      client: createWorkerClient({ worker }),
+    }),
+  ],
 });
 ```
 
@@ -60,6 +64,10 @@ trpcElectronPreload({ ipcRenderer });
 
 ```ts
 const client = createTRPCProxyClient<AppRouter>({
-  links: [workerLink({ worker: window })],
+  links: [
+    wsLink({
+      client: createWorkerClient({ worker: window }),
+    }),
+  ],
 });
 ```
