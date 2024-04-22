@@ -19,13 +19,13 @@
 	"exports": {
 		"./adapter": {
 			"types": "./dist/adapter.d.ts",
-			"import": "./dist/adapter.mjs",
-			"require": "./dist/adapter.js"
+			"import": "./dist/adapter.js",
+			"require": "./dist/adapter.cjs"
 		},
 		"./link": {
 			"types": "./dist/link.d.ts",
-			"import": "./dist/link.mjs",
-			"require": "./dist/link.js"
+			"import": "./dist/link.js",
+			"require": "./dist/link.cjs"
 		}
 	},
 	"devDependencies": {

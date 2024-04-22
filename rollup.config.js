@@ -15,14 +15,14 @@ export default defineConfig({
 		{
 			dir: `./${OUTPUT}`,
 			format: "cjs",
-			entryFileNames: "[name].js",
-			chunkFileNames: "[name]-[hash].js",
+			entryFileNames: "[name].cjs",
+			chunkFileNames: "[name]-[hash].cjs",
 		},
 		{
 			dir: `./${OUTPUT}`,
 			format: "esm",
-			entryFileNames: "[name].mjs",
-			chunkFileNames: "[name]-[hash].mjs",
+			entryFileNames: "[name].js",
+			chunkFileNames: "[name]-[hash].js",
 		},
 	],
 	plugins: [
