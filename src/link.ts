@@ -1,53 +1,68 @@
 import { createWSClient } from "@trpc/client";
 
-import { createTrpcPortMessage, SOCKET_STATE } from "./shared.js";
+import { SOCKET_STATE, createTrpcPortMessage } from "./shared.js";
 
 type SocketEssentials = Pick<
-  WebSocket,
-  | "addEventListener"
-  | "removeEventListener"
-  | "close"
-  | "send"
-  | "readyState"
-  | "CLOSED"
-  | "CLOSING"
-  | "CONNECTING"
-  | "OPEN"
+	WebSocket,
+	| "addEventListener"
+	| "removeEventListener"
+	| "close"
+	| "send"
+	| "readyState"
+	| "CLOSED"
+	| "CLOSING"
+	| "CONNECTING"
+	| "OPEN"
 >;
 
-interface SocketPonyFill extends SocketEssentials {}
-function SocketPonyFill(this: SocketPonyFill, port: MessagePort) {
-  const essentials: SocketEssentials = {
-    ...SOCKET_STATE,
-    readyState: SOCKET_STATE.OPEN,
-    addEventListener: port.addEventListener.bind(port),
-    removeEventListener: port.removeEventListener.bind(port),
-    close: port.close.bind(port),
-    send: port.postMessage.bind(port),
-  };
-  Object.assign(this, essentials);
+class SocketPonyFill implements SocketEssentials {
+	static CONNECTING = SOCKET_STATE.CONNECTING;
+	static OPEN = SOCKET_STATE.OPEN;
+	static CLOSING = SOCKET_STATE.CLOSING;
+	static CLOSED = SOCKET_STATE.CLOSED;
 
-  port.start();
-  queueMicrotask(() => port.dispatchEvent(new Event("open")));
+	readonly readyState = SOCKET_STATE.OPEN;
+	readonly CONNECTING = SOCKET_STATE.CONNECTING;
+	readonly OPEN = SOCKET_STATE.OPEN;
+	readonly CLOSING = SOCKET_STATE.CLOSING;
+	readonly CLOSED = SOCKET_STATE.CLOSED;
+
+	private port: MessagePort;
+	constructor(port: MessagePort) {
+		this.port = port;
+		queueMicrotask(() => port.dispatchEvent(new Event("open")));
+	}
+	addEventListener(...args: Parameters<MessagePort["addEventListener"]>) {
+		return this.port.addEventListener(...args);
+	}
+	removeEventListener(...args: Parameters<MessagePort["removeEventListener"]>) {
+		return this.port.removeEventListener(...args);
+	}
+	close() {
+		return this.port.close();
+	}
+	send(...args: Parameters<MessagePort["postMessage"]>) {
+		return this.port.postMessage(...args);
+	}
 }
-
-Object.assign(SocketPonyFill, SOCKET_STATE);
 
 interface WorkerLike {
-  postMessage(message: any, options: StructuredSerializeOptions): void;
+	postMessage(message: any, options: StructuredSerializeOptions): void;
 }
 
-interface WorkerLinkOptions {
-  worker: WorkerLike;
+interface WorkerClientOptions {
+	worker: WorkerLike;
 }
 
-function createWorkerClient({ worker }: WorkerLinkOptions) {
-  const { port1, port2 } = new MessageChannel();
-  worker.postMessage(createTrpcPortMessage(port1), { transfer: [port1] });
-  return createWSClient({
-    url: port2 as unknown as string,
-    WebSocket: SocketPonyFill as unknown as typeof WebSocket,
-  });
+function createWorkerClient({
+	worker,
+}: WorkerClientOptions): ReturnType<typeof createWSClient> {
+	const { port1, port2 } = new MessageChannel();
+	worker.postMessage(createTrpcPortMessage(port1), { transfer: [port1] });
+	return createWSClient({
+		url: port2 as unknown as string,
+		WebSocket: SocketPonyFill as unknown as typeof WebSocket,
+	});
 }
 
 export { createWorkerClient };
