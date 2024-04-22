@@ -1,6 +1,6 @@
 {
 	"name": "@hadeeb/trpc-worker",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"description": "Run tRPC in a web worker",
 	"type": "module",
 	"sideEffects": false,
@@ -8,14 +8,22 @@
 		"prepublishOnly": "npm run build",
 		"build": "rollup -c"
 	},
-	"keywords": ["trpc", "worker", "web worker", "electron"],
+	"keywords": [
+		"trpc",
+		"worker",
+		"web worker",
+		"electron"
+	],
 	"author": "Hadeeb Farhan",
 	"license": "MIT",
 	"peerDependencies": {
 		"@trpc/client": "^10.0.0",
 		"@trpc/server": "^10.0.0"
 	},
-	"files": ["src", "dist"],
+	"files": [
+		"src",
+		"dist"
+	],
 	"exports": {
 		"./adapter": {
 			"types": "./dist/adapter.d.ts",
