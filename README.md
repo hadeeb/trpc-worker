@@ -1,6 +1,7 @@
 # tRPC in a Worker
 
-Run tRPC in a web worker
+Run tRPC in a web worker / electron main thread
+
 
 ## Web Worker
 
@@ -42,12 +43,12 @@ const client = createTRPCProxyClient<AppRouter>({
 
 ```ts
 import { ipcMain } from "electron";
-import { createEletronServer } from "@hadeeb/trpc-worker/adapter";
+import { createElectronServer } from "@hadeeb/trpc-worker/adapter";
 
 applyWSSHandler({
   router: appRouter,
   createContext,
-  wss: createEletronServer({ ipcMain }),
+  wss: createElectronServer({ ipcMain }),
 });
 ```
 
@@ -71,3 +72,13 @@ const client = createTRPCProxyClient<AppRouter>({
   ],
 });
 ```
+
+## :warning: Compatibility with tRPC Updates
+
+This depends on the internals default tRPC Websocket link & `ws` adapter.
+
+It helps keep the implementation very light.
+
+However, it may break with tRPC patch updates.
+
+Please check before updating tRPC.

@@ -1,0 +1,17 @@
+{
+	"$schema": "https://biomejs.dev/schemas/1.6.1/schema.json",
+	"files": {
+		"ignore": ["node_modules", "dist"]
+	},
+	"formatter": {
+		"indentStyle": "tab",
+		"indentWidth": 2
+	},
+	"linter": {
+		"rules": {
+			"suspicious": {
+				"noExplicitAny": "off"
+			}
+		}
+	}
+}
