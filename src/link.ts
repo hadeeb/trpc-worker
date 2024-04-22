@@ -30,6 +30,7 @@ class SocketPonyFill implements SocketEssentials {
 	private port: MessagePort;
 	constructor(port: MessagePort) {
 		this.port = port;
+		port.start();
 		queueMicrotask(() => port.dispatchEvent(new Event("open")));
 	}
 	addEventListener(...args: Parameters<MessagePort["addEventListener"]>) {
