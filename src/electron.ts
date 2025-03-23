@@ -1,7 +1,7 @@
 import type { IpcMain, IpcRenderer, MessagePortMain } from "electron";
 
-import { BaseSocketPonyFill, socketServer } from "./common";
-import { isTrpcPortMessage } from "./shared";
+import { BaseSocketPonyFill, socketServer } from "./common.ts";
+import { isTrpcPortMessage } from "./shared.ts";
 
 class ElectronSocketPonyFill extends BaseSocketPonyFill {
 	private port: MessagePortMain;
@@ -17,7 +17,7 @@ class ElectronSocketPonyFill extends BaseSocketPonyFill {
 		}
 		return this;
 	}
-	once(event: "close", cb: (code: number) => void): this {
+	once(event: "close", cb: () => void): this {
 		this.port.once(event, cb);
 		return this;
 	}

@@ -1,5 +1,5 @@
-import { BaseSocketPonyFill, socketServer } from "./common.js";
-import { isTrpcPortMessage } from "./shared.js";
+import { BaseSocketPonyFill, socketServer } from "./common.ts";
+import { isTrpcPortMessage } from "./shared.ts";
 
 class SocketPonyFill extends BaseSocketPonyFill {
 	private port: MessagePort;
@@ -18,12 +18,8 @@ class SocketPonyFill extends BaseSocketPonyFill {
 		);
 		return this;
 	}
-	once(event: "close", listener: (code: number) => void): this {
-		this.port.addEventListener(
-			event,
-			(e) => listener((e as MessageEvent).data),
-			{ once: true },
-		);
+	once(event: "close", listener: () => void): this {
+		this.port.addEventListener(event, listener, { once: true });
 		return this;
 	}
 	close(): void {
@@ -51,7 +47,7 @@ function createWorkerServer({ worker }: { worker: WorkerLike }) {
 	});
 }
 
-export * from "./electron.js";
+export * from "./electron.ts";
 export { createWorkerServer };
 // Internals
 export {

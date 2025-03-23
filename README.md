@@ -2,6 +2,8 @@
 
 Run tRPC in a web worker / electron main thread
 
+> Thin wrapper(<1kb min+gzip) around tRPC's websocket link & adapter
+
 
 ## Web Worker
 
@@ -73,9 +75,20 @@ const client = createTRPCProxyClient<AppRouter>({
 });
 ```
 
+## :warning: Caveats
+
+While running in browser, you may have to disable server-side checks in tRPC.
+
+```ts
+const t = initTRPC.create({
+  isServer: false,
+  allowOutsideOfServer: true,
+});
+```
+
 ## :warning: Compatibility with tRPC Updates
 
-This depends on the internals default tRPC Websocket link & `ws` adapter.
+This depends on the internals of default tRPC Websocket link & `ws` adapter.
 
 It helps keep the implementation very light.
 

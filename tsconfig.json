@@ -14,7 +14,8 @@
 		"noFallthroughCasesInSwitch": true,
 		"noUncheckedIndexedAccess": true,
 		"moduleResolution": "Bundler",
-		"esModuleInterop": true
+		"esModuleInterop": true,
+		"allowImportingTsExtensions": true
 	},
 	"include": ["src"]
 }

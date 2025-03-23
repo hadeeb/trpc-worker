@@ -12,8 +12,8 @@
 	"author": "Hadeeb Farhan",
 	"license": "MIT",
 	"peerDependencies": {
-		"@trpc/client": "^10.0.0",
-		"@trpc/server": "^10.0.0"
+		"@trpc/client": "^10.0.0 || ^11.0.0",
+		"@trpc/server": "^10.0.0 || ^11.0.0"
 	},
 	"files": ["src", "dist"],
 	"exports": {
@@ -28,16 +28,24 @@
 			"require": "./dist/link.cjs"
 		}
 	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/hadeeb/trpc-worker.git"
+	},
+	"bugs": {
+		"url": "https://github.com/hadeeb/trpc-worker/issues"
+	},
+	"homepage": "https://github.com/hadeeb/trpc-worker#readme",
 	"devDependencies": {
-		"@rollup/plugin-node-resolve": "^15.2.3",
-		"@rollup/plugin-typescript": "^11.1.6",
-		"@trpc/client": "^10.45.2",
-		"@trpc/server": "^10.45.2",
-		"@types/node": "^16.18.96",
-		"@types/ws": "^8.5.10",
-		"electron": "^22.3.27",
-		"rollup": "^4.16.1",
-		"rollup-plugin-node-externals": "^7.1.1",
-		"typescript": "^5.4.5"
-	}
+		"@rollup/plugin-node-resolve": "^16.0.1",
+		"@rollup/plugin-typescript": "^12.1.2",
+		"@trpc/client": "^11.0.0",
+		"@trpc/server": "^11.0.0",
+		"@types/node": "^22.13.11",
+		"@types/ws": "^8.18.0",
+		"electron": "^34.3.4",
+		"rollup": "^4.36.0",
+		"typescript": "^5.8.2"
+	},
+	"packageManager": "pnpm@10.4.1"
 }
