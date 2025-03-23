@@ -1,6 +1,6 @@
 {
 	"name": "@hadeeb/trpc-worker",
-	"version": "0.0.2",
+	"version": "0.1.0",
 	"description": "Run tRPC in a web worker",
 	"type": "module",
 	"sideEffects": false,
