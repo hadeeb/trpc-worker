@@ -5,6 +5,7 @@
 		"target": "es2020",
 		"declaration": true,
 		"emitDeclarationOnly": true,
+		"skipLibCheck": true,
 		"declarationMap": true,
 		"outDir": "./dist",
 		"strict": true,
