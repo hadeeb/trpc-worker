@@ -1,3 +1,5 @@
+
+
 # tRPC in a Worker
 
 Run tRPC in a web worker / electron main thread
@@ -46,6 +48,7 @@ const client = createTRPCProxyClient<AppRouter>({
 ```ts
 import { ipcMain } from "electron";
 import { createElectronServer } from "@hadeeb/trpc-worker/adapter";
+import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
 applyWSSHandler({
   router: appRouter,
