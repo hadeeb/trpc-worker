@@ -1,5 +1,3 @@
-
-
 # tRPC in a Worker
 
 Run tRPC in a web worker / electron main thread
