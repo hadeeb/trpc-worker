@@ -46,6 +46,7 @@ const client = createTRPCProxyClient<AppRouter>({
 ```ts
 import { ipcMain } from "electron";
 import { createElectronServer } from "@hadeeb/trpc-worker/adapter";
+import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
 applyWSSHandler({
   router: appRouter,
